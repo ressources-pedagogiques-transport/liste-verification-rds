@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="fr-CA">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1c2b3a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Liste de vérification RDS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#1c2b3a;--teal:#2a9090;--red:#cc1f1f;--bg:#eef2f5;--mut:#566574;--line:#d3dbe2}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--navy);font:17px/1.35 'Source Sans 3',system-ui,sans-serif;min-height:100vh;display:flex;flex-direction:column}
+header{position:sticky;top:0;z-index:5;background:var(--navy);color:#fff;padding:env(safe-area-inset-top) 14px 0}
+.top{display:flex;align-items:baseline;justify-content:space-between;padding-top:10px}
+h1{margin:0;font:500 21px/1.2 Oswald,'Arial Narrow',sans-serif;letter-spacing:.02em}
+#pct{font:500 18px Oswald,'Arial Narrow',sans-serif}
+.tabs{display:flex;gap:6px;padding:8px 0 10px}
+.tab{flex:1;min-height:44px;border:0;border-radius:8px;background:#2c3f52;color:#d5e3ea;font:500 17px Oswald,'Arial Narrow',sans-serif}
+.tab[aria-selected=true]{background:var(--teal);color:#fff}
+.bar{height:6px;margin:0 -14px;background:#2c3f52}
+.bar i{display:block;height:100%;width:0;background:var(--teal);transition:width .2s}
+main{flex:1;width:100%;max-width:760px;margin:0 auto;padding:12px 12px 24px}
+.info{display:grid;grid-template-columns:1fr 1fr;gap:10px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px}
+.info label{display:flex;flex-direction:column;gap:4px;font-size:14px;color:var(--mut)}
+.info .w{grid-column:1/-1}
+input,textarea{font:inherit;color:var(--navy);min-height:44px;width:100%;border:1px solid #a9b6c2;border-radius:6px;padding:6px 10px;background:#fff}
+details.step{background:#fff;border:1px solid var(--line);border-radius:10px;margin-top:12px;overflow:hidden}
+summary{display:flex;align-items:center;gap:10px;min-height:52px;padding:8px 14px;cursor:pointer;list-style:none;font:500 19px Oswald,'Arial Narrow',sans-serif}
+summary::-webkit-details-marker{display:none}
+summary::before{content:'';flex:none;width:9px;height:9px;border:solid var(--navy);border-width:0 2px 2px 0;transform:rotate(-45deg);transition:transform .15s}
+details[open]>summary::before{transform:rotate(45deg)}
+.st{flex:1}
+.ct,.mc{font:600 15px 'Source Sans 3',sans-serif;padding:2px 10px;border-radius:99px;background:#e3e9ee;white-space:nowrap}
+details.done .ct,.it.ok .mc{background:var(--teal);color:#fff}
+.g{padding:0 14px 8px}
+.g h3{margin:14px 0 4px;padding-left:8px;border-left:4px solid var(--teal);font:500 17px Oswald,'Arial Narrow',sans-serif}
+.it{border-top:1px solid var(--line);padding:6px 0}
+.it.one{display:flex;align-items:center;gap:10px;min-height:56px;cursor:pointer}
+.lb{flex:1;font-weight:600}
+.hd{display:flex;align-items:center;gap:8px;min-height:38px}
+.all{min-height:38px;padding:0 12px;border:1px solid var(--navy);border-radius:6px;background:#fff;color:var(--navy);font:600 14px 'Source Sans 3',sans-serif}
+.pt{display:flex;flex-wrap:wrap;gap:6px 18px;margin:2px 0 4px}
+.pp{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.tg{min-width:64px;font-size:15px;color:var(--mut)}
+.bx{flex:none;position:relative;width:44px;height:44px;padding:0;border:2px solid var(--navy);border-radius:8px;background:#fff}
+.bx[aria-checked=true]{background:var(--teal);border-color:var(--teal)}
+.bx[aria-checked=true]::after{content:'';position:absolute;left:14px;top:5px;width:10px;height:20px;border:solid #fff;border-width:0 4px 4px 0;transform:rotate(45deg)}
+.vd{margin-left:8px;padding:2px 7px;border-radius:4px;background:var(--red);color:#fff;font:700 12px 'Source Sans 3',sans-serif;white-space:nowrap}
+.actions{display:flex;gap:10px;margin-top:18px}
+.actions button{flex:1;min-height:50px;border:2px solid var(--navy);border-radius:8px;background:#fff;color:var(--navy);font:500 18px Oswald,'Arial Narrow',sans-serif}
+.actions .pri{background:var(--navy);color:#fff}
+.cm{margin-top:12px}.cm textarea{min-height:120px;resize:vertical}
+footer{background:var(--navy);color:#d5e3ea;text-align:center;font-size:14px;padding:16px 16px calc(16px + env(safe-area-inset-bottom))}
+:focus-visible{outline:3px solid #e8a200;outline-offset:2px}
+@media print{
+ header .tabs,.bar,.actions,.all{display:none}
+ header{position:static}body{background:#fff}
+ .bx,.vd,header,footer,.ct,.mc{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+ details.step{break-inside:avoid-page}
+}
+</style>
+</head>
+<body>
+<header>
+ <div class="top"><h1>Liste de vérification RDS</h1><span id="pct"></span></div>
+ <div class="tabs" role="tablist">
+  <button class="tab" role="tab" data-k="camion">Camion</button>
+  <button class="tab" role="tab" data-k="semi">Semi-remorque</button>
+ </div>
+ <div class="bar"><i id="bar"></i></div>
+</header>
+<main>
+ <div class="info">
+  <label>Élève<input id="f-nom" autocomplete="off"></label>
+  <label>Date<input id="f-dt" type="date"></label>
+  <label class="w">Véhicule (unité ou plaque)<input id="f-veh" autocomplete="off"></label>
+ </div>
+ <div id="steps"></div>
+ <div class="cm" id="cm"><label for="f-note" style="font-size:14px;color:var(--mut)">Commentaires de l’enseignant</label><textarea id="f-note"></textarea></div>
+ <div class="actions"><button id="rst">Réinitialiser</button><button id="prt" class="pri">Imprimer / PDF</button></div>
+</main>
+<footer>Propriété de Guillaume Nicole-Roussel · Septembre 2026</footer>
+<script>
+// Notation: "Libellé" = 1 case · "Libellé|4" = 4 cases · "Libellé|G:3,D:3" = groupes étiquetés · "Libellé|Avant,Arrière" = 1 case par étiquette · "!" = règle de verdict
+const FL="Flancs|Intérieur:4,Médian:4,Extérieur:4",FM="Fuite moyeu|Intérieur:4,Extérieur:4";
+const D={
+camion:{notes:1,s:[
+["Étape 1 : Approche du véhicule",[
+ ["",["Affaissement véhicule","Liquide au sol","Roues parallèles","Freins stationnement serrés!"]],
+ ["Documents légaux",["Immatriculation","Assurance","Vignettes inspection SAAQ","Matériels urgences"]]]],
+["Étape 2 : Sous le capot",[
+ ["Liquides",["Huile moteur","Liquide refroidissement","Huile servodirection","Liquide lave-glace","Huile embrayage"]],
+ ["S’il y a lieu",["Fuite liquide moteur","Filtre à air","Sys. alim. en air","Alternateur","Solidité radiateur|2","Ventilateur","Courroies","Longeron|2"]],
+ ["Direction",["Colonne direction","Boitier direction","Timonerie"]],
+ ["Suspension à l’avant",["Amortisseur|2","Lames|2","Ancrages|2","Brides de fixations|2","Jumelles|2","Récepteur de freins|2"]],
+ ["Pneus de la direction",["Semelle|2","Flanc|Intérieur:2,Extérieur:2"]],
+ ["Roues de la direction",["Roue|2","Boulons|2","Fuite moyeu|Intérieur:2,Extérieur:2","Niveau huile moyeu|2","Valve|2"]]]],
+["Étape 3 : Vérif. intérieur",[
+ ["Freins pneumatiques",["Avertisseur basse pression","Rendement","Arrêt compresseur","Étanchéité","Mise en marche compresseur","Freins stationnement serrés!"]],
+ ["Rétroviseurs et vitrage",["Pare-brise","Vitre latérale","Rétroviseur latéral","Rétroviseur convexe","Essuie-glace","Lave-glace","Soufflerie","Odeur d’échappement cabine"]],
+ ["Direction",["Solidité volant","Colonne direction reste en place","Fonct. servo-direction","Klaxon","Siège","Ceinture"]]]],
+["Étape 4 : Vérif. extérieur",[
+ ["Feux et lumières",["Feux de croisement","Feux gabarits","Feux identification","Tous les feux de position","Tous les clignotants gauches","Tous les clignotants droits","Tous les feux de freinage","Feux de route"]],
+ ["Rétroviseurs et carrosserie",["Rétroviseurs|4","Carrosserie|2"]],
+ ["Portières",["Chauffeur","Passager"]],
+ ["Sys. alim. carburant",["Fixation réservoir diesel|2","Bouchon|2","Fuite réservoir|2"]],
+ ["Suspension cabine",["Ballon|2","Amortisseurs|2"]],
+ ["Châssis et sellette",["Longerons|2","Traverses|4","État sellette|2","Fixations sellette|2","Goupilles sellette"]],
+ ["Suspension à l’arrière",["Amortisseur|4","Lames|4","Ancrages|4","Brides fixations|4","Ballons|4","Récepteur de freins|4","Pont arrière|2","Garde-boue|4"]],
+ ["Pneus à l’arrière",["Pression|8","Semelle|8",FL]],
+ ["Roues à l’arrière",["Roues|4","Boulons|4",FM,"Valves|8"]]]],
+["Étape 5 : Vérif. intérieur",[
+ ["",["Freins stationnement","Roues libérées","Freins service","Embrayage","Accélérateur"]]]]
+]},
+semi:{s:[
+["Étape 1 : Prise en charge",[
+ ["",["Arrêter à demi-roues","Alignement droit","Angle sellette","Hauteur semi-remorque","Pivot","Plaque d’attelage"]]]],
+["Étape 2 : Procédure d’attelage",[
+ ["",["Forcer vers l’avant"]],
+ ["Vérification sellette",["Boulon bien rentré","Poignée bien rentrée","Mâchoires fermées"]],
+ ["Freins pneumatiques",["Rendement","Étanchéité"]]]],
+["Étape 3 : Vérif. extérieur",[
+ ["Documents légaux",["Immatriculation","Vignette inspection SAAQ"]],
+ ["Châssis",["Carrosserie|G:3,D:3","Longeron|G:3,D:3","Béquilles levées|G,D","Train coulissant|G,D","Goupilles|G:2,D:2","Longeron du tandem|G,D","Traverses|Avant,Milieu,Arrière"]],
+ ["Suspension",["Ancrage|4","Bras de suspension|4","Ballon|4","Amortisseur|4"]],
+ ["Pneus",["Pression|8","Semelle|8",FL]],
+ ["Roues",["Roues/jante|4","Boulons|4",FM,"Niveau huile moyeu|4","Valves|8"]],
+ ["Freinage, garde-boues et cargaison",["Garde-boues|2","Récepteur de freins|4","Tiges de poussée|4","Vérification cargaison","Intérieur semi-remorque"]],
+ ["Feux et lumières",["Feux gabarits, gauche|Avant,Arrière","Feux gabarits, droit|Avant,Arrière","Tous les feux de position|Gauche,Arrière,Droit","Tous les clignotants gauches|Latéral,Arrière","Tous les clignotants droits|Latéral,Arrière","Tous les feux de freinage","Feux identification","Feu de plaque"]]]],
+["Étape 4 : Au volant",[
+ ["",["Freins stationnement","Roues libérées","Freins service"]]]]
+]}};
+
+const $=q=>document.querySelector(q),KEY='rds1-',mem={};
+const ld=k=>{try{return JSON.parse(localStorage.getItem(KEY+k))}catch(e){return mem[k]}};
+let cur=(()=>{try{return localStorage.getItem(KEY+'tab')}catch(e){}})()||'camion',st;
+if(!D[cur])cur='camion';
+const sv=()=>{try{localStorage.setItem(KEY+cur,JSON.stringify(st))}catch(e){mem[cur]=JSON.parse(JSON.stringify(st))}};
+const h=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x)e.innerHTML=x;return e};
+function parse(s){let[l,sp]=s.split('|'),v=l.endsWith('!');if(v)l=l.slice(0,-1);
+ return{l,v,parts:(sp||'1').split(',').map(p=>{if(/^\d+$/.test(p))return{t:'',n:+p};const[t,n]=p.split(':');return{t,n:n?+n:1}})}}
+
+function build(){
+ const d=D[cur];st=ld(cur)||{};st.c=st.c||{};st.f=st.f||{};
+ document.querySelectorAll('.tab').forEach(b=>b.setAttribute('aria-selected',b.dataset.k==cur));
+ ['nom','dt','veh','note'].forEach(k=>$('#f-'+k).value=st.f[k]||'');
+ $('#cm').hidden=!d.notes;
+ const R=$('#steps');R.innerHTML='';
+ d.s.forEach((s,si)=>{
+  const dt=h('details','step',`<summary><span class="st">${s[0]}</span><span class="ct"></span></summary>`);
+  if(!si)dt.open=true;
+  s[1].forEach((g,gi)=>{
+   const gd=h('div','g');if(g[0])gd.append(h('h3','',g[0]));
+   g[1].forEach((raw,ii)=>{
+    const it=parse(raw),tot=it.parts.reduce((a,p)=>a+p.n,0),one=tot==1&&!it.parts[0].t;
+    const row=h('div','it '+(one?'one':'multi'));let k=0;
+    const lab=`<span class="lb">${it.l}${it.v?'<span class="vd">Règle de verdict</span>':''}</span>`;
+    const bx=(t,j)=>{const id=`${si}.${gi}.${ii}.${k++}`;
+     return `<button class="bx" role="checkbox" data-id="${id}" aria-checked="${!!st.c[id]}" aria-label="${it.l}${t?' '+t:''} ${j+1}"></button>`};
+    if(one)row.innerHTML=lab+bx('',0);
+    else{
+     row.innerHTML=`<div class="hd">${lab}<span class="mc"></span><button class="all">Tout</button></div><div class="pt">`+
+      it.parts.map(p=>`<span class="pp">${p.t?`<span class="tg">${p.t}</span>`:''}${Array.from({length:p.n},(_,j)=>bx(p.t,j)).join('')}</span>`).join('')+'</div>';
+    }
+    gd.append(row)});
+   dt.append(gd)});
+  R.append(dt)});
+ refresh();
+}
+function refresh(){
+ let D0=0,T0=0;
+ document.querySelectorAll('.it.multi').forEach(r=>{const b=[...r.querySelectorAll('.bx')],n=b.filter(x=>x.getAttribute('aria-checked')=='true').length;
+  r.querySelector('.mc').textContent=n+' / '+b.length;r.classList.toggle('ok',n==b.length)});
+ document.querySelectorAll('details.step').forEach(s=>{const b=[...s.querySelectorAll('.bx')],n=b.filter(x=>x.getAttribute('aria-checked')=='true').length;
+  s.querySelector('.ct').textContent=n+' / '+b.length;s.classList.toggle('done',n==b.length);D0+=n;T0+=b.length});
+ $('#bar').style.width=(100*D0/T0)+'%';$('#pct').textContent=D0+' / '+T0;
+}
+function put(b,on){b.setAttribute('aria-checked',on);if(on)st.c[b.dataset.id]=1;else delete st.c[b.dataset.id]}
+$('#steps').onclick=e=>{
+ const a=e.target.closest('.all');
+ if(a){const bs=[...a.closest('.it').querySelectorAll('.bx')],on=!bs.every(b=>b.getAttribute('aria-checked')=='true');bs.forEach(b=>put(b,on))}
+ else{const r=e.target.closest('.it.one'),b=e.target.closest('.bx')||(r&&r.querySelector('.bx'));if(!b)return;put(b,b.getAttribute('aria-checked')!='true')}
+ sv();refresh();
+};
+['nom','dt','veh','note'].forEach(k=>$('#f-'+k).oninput=e=>{st.f[k]=e.target.value;sv()});
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{cur=b.dataset.k;try{localStorage.setItem(KEY+'tab',cur)}catch(e){}build();scrollTo(0,0)});
+let rt;
+$('#rst').onclick=()=>{const b=$('#rst');
+ if(b.dataset.arm){clearTimeout(rt);delete b.dataset.arm;b.textContent='Réinitialiser';st={c:{},f:{}};sv();build()}
+ else{b.dataset.arm=1;b.textContent='Confirmer l’effacement';rt=setTimeout(()=>{delete b.dataset.arm;b.textContent='Réinitialiser'},4000)}};
+$('#prt').onclick=()=>print();
+addEventListener('beforeprint',()=>document.querySelectorAll('details').forEach(d=>{d.dataset.o=d.open?1:'';d.open=true}));
+addEventListener('afterprint',()=>document.querySelectorAll('details').forEach(d=>{d.open=!!d.dataset.o}));
+build();
+</script>
+</body>
+</html>
